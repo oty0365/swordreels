@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.XR;
 
 public class SnakeHead : MonoBehaviour
 {
@@ -61,6 +62,7 @@ public class SnakeHead : MonoBehaviour
             var bodyData = body.GetComponent<SnakeBody>();
             bodyData.target = tailTip[tailTip.Count - 1];
             tailTip.Add(body);
+            SnakeUiManager.instance.UpdateScore(1);
         }
         else if (collision.CompareTag("Body")&&isAlive)
         {
@@ -88,6 +90,13 @@ public class SnakeHead : MonoBehaviour
         {
             prt.gameObject.transform.position = tailTip[i].transform.position;
             prt.Play();
+            if (i == 0)
+            {
+                var sr = gameObject.GetComponent<SpriteRenderer>();
+                sr.color = new Color(0, 0, 0, 0);
+                yield return new WaitForSeconds(1f);
+                SnakeUiManager.instance.GameOver();
+            }
             Destroy(tailTip[i]);
             yield return new WaitForSeconds(0.19f);
         }
